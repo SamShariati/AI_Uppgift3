@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine;
 public class NN : MonoBehaviour
 {
 
-    public int[] networkShape = { 2, 4, 4, 2 };
+    public int[] networkShape = { 5, 32, 2 };
     public Layer[] layers;
     //public Layer hidden1;
     //public Layer hidden2;
@@ -33,7 +34,9 @@ public class NN : MonoBehaviour
             weightsArray = new float[n_nodes, n_inputs];
             biasesArray = new float[n_nodes];
             nodeArray = new float[n_nodes];
+
         }
+
 
         public void forward(float[] inputArray)
         {
@@ -53,9 +56,7 @@ public class NN : MonoBehaviour
                 nodeArray[i] += biasesArray[i];
 
             }
-            
-
-            
+              
         }
 
         public void Activation()
@@ -66,6 +67,26 @@ public class NN : MonoBehaviour
                 if (nodeArray[i] < 0)
                 {
                     nodeArray[i] = 0;
+                }
+            }
+        }
+
+
+        public void MutateLayer(float mutationChance, float mutationAmount)
+        {
+            for(int i = 0; i < n_nodes; i++)
+            {
+                for(int j = 0; j < n_inputs; j++)
+                {
+                    if(Random.value < mutationChance)
+                    {
+                        weightsArray[i, j] += Random.Range(-1.0f, 1.0f) * mutationAmount;
+                    }
+                }
+
+                if(Random.value < mutationChance)
+                {
+                    biasesArray[i] += Random.Range(-1.0f, 1.0f) * mutationAmount;
                 }
             }
         }
@@ -110,15 +131,25 @@ public class NN : MonoBehaviour
         return (layers[layers.Length - 1].nodeArray);
 
 
-        //hidden1.forward(inputs);
-        //hidden1.Activation();
-        //hidden2.forward(hidden1.nodeArray);
-        //hidden2.Activation();
-        //output.forward(hidden2.nodeArray);
-
-        //return (output.nodeArray);
-
     }
 
+    public Layer[] CopyLayers()
+    {
+        Layer[] tempLayers = new Layer[networkShape.Length - 1];
+        for(int i=0; i< layers.Length; i++)
+        {
+            tempLayers[i] = new Layer(networkShape[i], networkShape[i + 1]);
+            System.Array.Copy(layers[i].weightsArray, tempLayers[i].weightsArray, layers[i].weightsArray.GetLength(0) * layers[i].weightsArray.GetLength(1));
+            System.Array.Copy(layers[i].biasesArray, tempLayers[i].biasesArray, layers[i].biasesArray.GetLength(0) * layers[i].biasesArray.GetLength(1));
+        }
+        return (tempLayers);
+    }
 
+    public void MutateNetwork(float mutationChance, float mutationAmount)
+    {
+        for(int i=0; i<layers.Length; i++)
+        {
+            layers[i].MutateLayer(mutationChance, mutationAmount);
+        }
+    }
 }
