@@ -151,10 +151,10 @@ MonoBehaviour:
   agentPrefab: {fileID: 8048527397509096688}
   isUser: 0
   canEat: 1
-  viewDistance: 20
+  viewDistance: 30
   size: 1
   energy: 20
-  energyGained: 10
+  energyGained: 5
   reproductionEnergyGained: 1
   reproductionEnergy: 0
   reproductionEnergyThreshold: 10

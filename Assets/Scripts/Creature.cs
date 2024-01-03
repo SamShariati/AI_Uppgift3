@@ -60,33 +60,12 @@ public class Creature : MonoBehaviour
 
         ManageEnergy();
 
-        // This group of comments is for the old food detection system
-        // //use the FindClosestFood function to find the closest food object
-        // GameObject closestFood = FindClosestFood();
-
-        // //if food is found, set the relative x and z coordinates of the food to the agent
-        // if (closestFood != null)
-        // {
-        //         relativeFoodX = this.transform.position.x - closestFood.transform.position.x;
-        //         relativeFoodZ = this.transform.position.z - closestFood.transform.position.z;
-        // }
-
-        // //get the angle between the agents local rotation and the food
-        // float angle = Vector3.SignedAngle(transform.forward, new Vector3(relativeFoodX, 0, relativeFoodZ), Vector3.up);
-
-        // //get the distance between the agent and the food
-        // float distance = Mathf.Sqrt((Mathf.Pow(relativeFoodX, 2) + Mathf.Pow(relativeFoodZ, 2)));
-
-        // //Setup inputs for neural network
-        // //get the global rotation of the agent
-        // float [] inputsToNN = {relativeFoodX, relativeFoodZ, transform.rotation.eulerAngles.y};
-
-        //float [] inputsToNN ={(angle), distance/50};
+     
 
 
         // This section of code is for the new food detection system (Raycasts)
         // Set up a variable to store the number of raycasts to use
-        int numRaycasts = 5;
+        int numRaycasts = 6;
 
         // Set up a variable to store the angle between raycasts
         float angleBetweenRaycasts = 30;
@@ -138,11 +117,11 @@ public class Creature : MonoBehaviour
         LR = outputsFromNN[1];
 
         //if the agent is the user, use the inputs from the user instead of the neural network
-        if (isUser)
-        {
-            FB = Input.GetAxis("Vertical");
-            LR = Input.GetAxis("Horizontal")/10;
-        }
+        //if (isUser)
+        //{
+        //    FB = Input.GetAxis("Vertical");
+        //    LR = Input.GetAxis("Horizontal")/10;
+        //}
 
         //Move the agent using the move function
         movement.Move(FB, LR);
@@ -282,7 +261,10 @@ public class Creature : MonoBehaviour
             
             //copy the parent's neural network to the child
             child.GetComponent<NN>().layers = GetComponent<NN>().copyLayers();
+
+            
         }
+        
         reproductionEnergy = 0;
 
     }
